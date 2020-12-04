@@ -14,7 +14,6 @@
 </head>
 <body style="padding-top: 45px">
 <%@include file="header.jsp"%>
-<%@include file="jdbc.jsp" %>
 
 <div class="container mt-5">
 <% 
@@ -37,8 +36,8 @@
 		out.println("ClassNotFoundException: " + e);
 	}
 
-	//try (Connection con = DriverManager.getConnection(url, uid, pw);) {
-		getConnection();
+	try (Connection con = DriverManager.getConnection(url, uid, pw);) {
+		
 		int id = -1;
 		boolean isId = false;
 		// Determine if valid customer id was entered
@@ -89,19 +88,19 @@
 			{ 
 				Map.Entry<String, ArrayList<Object>> entry = iterator.next();
 				ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
-				String productId = (String)product.get(0);
-				String price = (String)(product.get(3).toString());
+				String productId = (String) product.get(0);
+				String price = (String) product.get(2);
 				double pr = 0;
 				if (price != null)
 					pr = Double.parseDouble(price);
-				int qty = Integer.parseInt((String)product.get(4).toString());
+				int qty = ( (Integer)product.get(3)).intValue();
 				// Insert into orderproduct table
 				sql = "INSERT INTO orderproduct VALUES (?, ?, ?, ?)";
 				pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 				pstmt.setInt(1, orderId); pstmt.setString(2, productId); pstmt.setInt(3, qty); pstmt.setDouble(4, pr);
 				pstmt.executeUpdate();
 				// Add to total product price
-				totalPrice += qty*pr;
+				totalPrice += pr;
 			}
 
 			// Update total amount for order record
@@ -120,7 +119,7 @@
 
 			out.println("<table class='table table-striped'><thead class='thead-dark'><tr><th>Product Id</th><th>Product Name</th><th>Quantity</th><th>Price</th><th>Subtotal</th></tr></thead>"); 
 				NumberFormat currFormat = NumberFormat.getCurrencyInstance(new Locale("en","US"));
-				sql = "SELECT oP.productId, productBrand, productModel, quantity, productPrice FROM orderProduct oP JOIN Product P ON oP.productId=P.productId WHERE orderId =?";
+				sql = "SELECT oP.productId, productName, quantity, productPrice, price FROM orderProduct oP JOIN Product P ON oP.productId=P.productId WHERE orderId =?";
 				pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 				pstmt.setInt(1, orderId);
 				rst = pstmt.executeQuery();
@@ -128,7 +127,7 @@
 				while (rst.next()) {
 					// For each product create a link of the form
 					// addcart.jsp?id=productId&name=productName&price=productPrice
-					out.println("<tr><td>"+rst.getInt(1)+"</td><td>"+rst.getString(2)+rst.getString(3)+"</td><td>"+rst.getInt(4)+"</td><td>"+currFormat.format(rst.getDouble(5))+"</td><td>"+currFormat.format(rst.getDouble(4)*rst.getDouble(5))+"</td></tr>");
+					out.println("<tr><td>"+rst.getInt(1)+"</td><td>"+rst.getString(2)+"</td><td>"+rst.getInt(3)+"</td><td>"+currFormat.format(rst.getDouble(4))+"</td><td>"+currFormat.format(rst.getDouble(5))+"</td></tr>");
 				}
 				out.println("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td>"
 							+"<td><b>"+currFormat.format(totalPrice)+"</b></td></tr>");
@@ -150,9 +149,9 @@
 
 			session.removeAttribute("productList");
 		}
-	/*} catch (Exception e) {
+	} catch (Exception e) {
 		out.println(e);
-	}*/
+	}
 %>
 </div>
 </BODY>

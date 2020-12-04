@@ -2,7 +2,6 @@
 <%@ page import="java.util.Scanner" %>
 <%@ page import="java.io.File" %>
 <%@ include file="jdbc.jsp" %>
-<%@ include file="auth.jsp" %>
 
 <html>
 <head>
@@ -47,8 +46,6 @@ try
     scanner.close();
     
     out.print("<br><br><h1>Database loaded.</h1>");
-
-    response.sendRedirect("index.jsp");
 }
 catch (Exception e)
 {

@@ -33,6 +33,11 @@ if (session.getAttribute("loginMessage") != null)
 <input class="mt-4 submit" type="submit" name="Submit2" value="Log In">
 </form>
 
+<div class='mt-3'>
+	<button class=btn btn-light m-3><a href=createUser.jsp>Create User</a></button>
+	</div>
+
+
 </div>
 
 </body>
