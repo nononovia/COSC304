@@ -38,29 +38,26 @@ else
 	while (iterator.hasNext()) 
 	{	Map.Entry<String, ArrayList<Object>> entry = iterator.next();
 		ArrayList<Object> product = (ArrayList<Object>) entry.getValue();
-		if (product.size() < 5)
+		if (product.size() < 4)
 		{
 			out.println("Expected product with four entries. Got: "+product);
 			continue;
 		}
-		String model = (String)product.get(2);
+		
 		out.print("<tr><td>"+product.get(0)+"</td>");
 		out.print("<td>"+product.get(1)+" "+product.get(2)+"</td>");
 
 		out.print(
-			"<td>"+
-				"<form method=post action=addcart.jsp?id="+product.get(0)+"&brand="+
-				product.get(1)+"&model="+model.replaceAll(" ", "+")+"&price="+product.get(3)+">"+
-				"<input name='qty' type='text' value='" + product.get(4) +"'>" +
-				"<button class='btn btn-dark btn-sm' type=submit>Save</button>"+
-			"</form>"+
+			"<td>"+"<input name='quantitytype='text value='" + product.get(4) +"'>" +
+			//"<input type='submit' value='Submit'>" +
+				"<button class='btn btn-dark btn-sm' onclick='saveqty()'>Save</button>"+
 			"</td>");
 		
-		//out.print("<script> function saveqty(){var quantity = document.getElementByName('quantity')};</script>");
-		//product.set(3,request.getParameter("quantity"));
+		out.print("<script> function saveqty(){var quantity = document.getElementByName('quantitytype')};</script>");
+		product.set(4,request.getParameter("quantity"));
 		Object price = product.get(3);
+		//quantity
 		Object itemqty = product.get(4);
-		//Object itemqty = request.getParameter("quan");
 		double pr = 0;
 		int qty = 0;
 		
@@ -89,6 +86,8 @@ else
 		out.print("<td>"+currFormat.format(pr*qty)+"</td>");
 		//out.print("<td><a href=addcart.jsp?id="+product.get(0)+"&name="+product.get(1)+"&price="+product.get(2)+"&quan="+0+">Remove From Cart</a></td></tr>");
 		out.println("</tr>");
+		out.println(pr);
+		out.println(qty);
 		total = total +pr*qty;
 	}
 	out.println("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td>"

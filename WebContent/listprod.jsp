@@ -18,7 +18,7 @@
     <div class="row justify-content-center"> 
         <div class="col-9 m-3">
 			<form class="form-inline my-2 my-lg-0" method="get" action="listprod.jsp">
-				<input class="form-control mr-2" type="text" name="productName" size="50">
+				<input class="form-control mr-2" type="text" name="productBrand" size="50">
 				<input class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit" value="Submit">
 				<input class="btn btn-outline-success my-2 my-sm-0 mr-2" type="reset" value="Reset"> (Leave blank for all products)
 			</form>
@@ -69,9 +69,9 @@
 		// Start the table
 		out.println("<table class='table table-striped'><thead class='thead-dark'><tr><th colspan=1>Product Name</th><th colspan=1>Product Year</th><th colspan=2>Price</th></tr></thead>"); 
 			
-		
+		getConnection();
 		try {
-			getConnection();
+
 			PreparedStatement stmt=null;
 			ResultSet rst = null;
 			NumberFormat currFormat = NumberFormat.getCurrencyInstance(new Locale("en","US"));
@@ -94,7 +94,7 @@
 				//if nothing came back from categories
 				if (categories.length == 0){
 					out.println("<tr><td><a href=product.jsp?id="+rst.getInt(5)+">"+rst.getString(2)+"</a></td><td>"+rst.getInt(3)+
-						"</td><td>"+currFormat.format(rst.getDouble(4))+"</td><td><a href=addcart.jsp?id="+rst.getInt(5)+"&brand="+rst.getString(1).replaceAll(" ", "+")+"&model="+rst.getString(2).replaceAll(" ", "+")+"&price="+rst.getDouble(4)+
+						"</td><td>"+currFormat.format(rst.getDouble(4))+"</td><td><a href=addcart.jsp?id="+rst.getInt(4)+"&name="+rst.getString(2).replaceAll(" ", "+")+"&price="+rst.getDouble(4)+
 						">Add to Cart</a></td></tr>");
 
 				} else {
@@ -121,7 +121,7 @@
 
 							out.println("<tr><td><a href=product.jsp?id="+rst.getInt(5)+">"+rst.getString(2)+"</a></td><td>"+rst.getInt(3)+
 								"</td><td>"+currFormat.format(rst.getDouble(4))+"</td><td><a href=addcart.jsp?id="+rst.getInt(5)+"&brand="+rst.getString(1)+"&model="+rst.getString(2).replaceAll(" ","+")+
-									"&price="+rst.getDouble(4)+"&qty=1>Add To Cart</a></td></tr>");
+									"&price="+rst.getDouble(4)+">Add To Cart</a></td></tr>");
 
 							}
 
